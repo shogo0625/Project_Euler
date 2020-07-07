@@ -14,3 +14,6 @@ for n in 1..999 do
 end
 
 p sum
+
+# 一行で。。。
+puts [*1...1000].select { |n| (n % 3).zero? || (n % 5).zero? }.inject(:+)
