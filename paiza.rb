@@ -36,3 +36,24 @@ p "testatexample.com".gsub("at", "@") # => "test@example.com"
 p (1..10).inject { |sum, i| sum + i } # => 55
 # シンボルで演算子を渡す 上記と同じ結果
 p (1..10).inject(:+) # => 55
+
+# uniqメソッド　配列内の要素がすべて正しいか
+p [3, 3, 3].uniq.one? # => true
+p ["a", "a", "a"].uniq.count == 1 # => true
+
+# mapメソッドの引数にメソッドを渡して要素それぞれに適用
+p ['h', 'e', 'y'].map(&:upcase).join # => "HEY"
+
+# divmodメソッド　商と余りを配列にして返す
+answer = 100.divmod(3)
+p "A: #{answer[0]} 余り#{answer[1]}" # => "A: 33 余り1"
+
+# selectメソッド(find_allも一緒)　ブロック内の式がtrueの要素だけ配列で返す
+p [1, 2, 3, 4, 5, 6].select { |n| n.even? } # => [2, 4, 6]
+# rejectメソッド　selectの逆　falseだけ配列にして返す
+p [1, 2, 3, 4, 5, 6].reject { |n| n.even? } # => [1, 3, 5]
+
+# grepメソッド　引数にマッチする要素だけ抽出し配列で返す
+p [1, "a", 2, "b", 3, "c" ].grep(/[a-z]/) # => ["a", "b", "c"]
+
+

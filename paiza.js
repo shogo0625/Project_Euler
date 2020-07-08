@@ -7,4 +7,7 @@
   console.log('hello, world'.replace('hello', 'goodbye')); // => "goodbye, world"
   // 大文字・小文字(toDownCase)
   console.log('hello'.toUpperCase());
+  // 文字列の”1”から数値へ変換
+  console.log(+"1"); // => 1
+
 }
