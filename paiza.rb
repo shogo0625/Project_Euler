@@ -12,6 +12,10 @@ line = "Perfect"
 p line[2, 3]
 # => "rfe"
 
+# sliceメソッド 文字列でも使える
+p ["Ruby","Python","Java"].slice(0..1) # => ["Ruby", "Python"]
+p ["Ruby","Python","Java"].slice(-1, 1) # => ["Java"]
+
 # splitメソッド　引数に渡した区切り文字で文字列を配列に分解
 p 'Ruby&Java&Perl&PHP'.split('&')
 # => ["Ruby", "Java", "Perl", "PHP"]
@@ -58,4 +62,10 @@ p [1, "a", 2, "b", 3, "c" ].grep(/[a-z]/) # => ["a", "b", "c"]
 
 # 次の繰り返しにスキップ　next
 
+# spintfメソッド　指定した桁数に合わせる
+p sprintf("%003d", "7") # => "007"
 
+# timesメソッド　オブジェクト.times
+str = ""
+3.times { str += "あ"}
+p str # => "あああ"
