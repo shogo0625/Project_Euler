@@ -178,7 +178,7 @@
   console.log(array); // => ["A", "B", "C"]
   // spliceメソッド　array.splice(インデックス, 削除する要素数, ...追加する要素);
   // 1番目から1つの要素("B")を削除
-  array.splice(1, 1)
+  array.splice(1, 1) // => ["A", "C"]
 }
 // 配列の結合・展開
 {
@@ -197,4 +197,50 @@
 {
   const array = [[["A"], "B"], "C"];
   console.log(array.flat(Infinity)); // =>["A", "B", "C"]
+}
+// 配列のコピーを作成する　引数無しで concat or slice
+{
+  const array = ["A", "B", "C"];
+  const copiedArray = array.slice(); // concatでも同じ
+  console.log(copiedArray); // => ["A", "B", "C"]
+}
+// 配列の繰り返し処理　forEach map filter (reduce ブロックの後に 0 )
+// コールバック関数を渡す　引数には、(累積値 reduceのみ), 要素, インデックス, 配列そのもの が渡される
+{
+  // forEachメソッド
+  const array = [1, 2, 3];
+  array.forEach((currentValue, index, array) => {
+    console.log(currentValue, index, array);
+  });
+  // 1, 0, [1, 2, 3]
+  // 2, 1, [1, 2, 3]
+  // 3, 2, [1, 2, 3]
+  // mapメソッド　各要素に処理を行い、新しい配列を作成する
+  const mapArray = array.map((currentValue, index, array) => {
+    return currentValue * 10;
+  });
+  console.log(mapArray); // => [10, 20, 30]
+  // filterメソッド　各要素で真偽値を評価し、trueの要素だけで新しい配列を作成する
+  const filterArray = array.filter((currentValue, index, array) => {
+    return currentValue % 2 === 1;
+  });
+  console.log(filterArray); // => [1, 3]
+  // reduceメソッド　累積値（アキュムレータ）と配列の要素を順番にコールバック関数へ渡し、1つの累積値を返す
+  const array = [1, 2, 3];
+  // すべての要素を加算した値を返す
+  // accumulatorの初期値は`0`
+  const totalValue = array.reduce((accumulator, currentValue, index, array) => {
+    return accumulator + currentValue;
+  }, 0);
+  // 0 + 1 + 2 + 3という式の結果が返り値になる
+  console.log(totalValue); // => 6
+}
+// 文字列の置換
+{
+  const str = "文字列";
+  // "文字"を""（空文字列）へ置換することで"削除"を表現
+  const newStr = str.replace("文字", "");
+  console.log(newStr); // => "列"
+  // `g`フラグあり正規表現の場合は、繰り返し置換を行う
+  console.log(str.replace(/にわ/g, "niwa")); // => "niwaにはniwaniwaとりがいる"
 }
