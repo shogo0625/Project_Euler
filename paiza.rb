@@ -69,3 +69,9 @@ p sprintf("%003d", "7") # => "007"
 str = ""
 3.times { str += "あ"}
 p str # => "あああ"
+
+# sortメソッド　sort_by ＋ ブロック
+p [1, 2, 3, 4, 5, 6].sort.reverse # => [6, 5, 4, 3, 2, 1]
+p ["aaaaa","b","tt"].sort_by {|l| l.size } # =>  ["b", "tt", "aaaaa"]
+
+
