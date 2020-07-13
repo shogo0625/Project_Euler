@@ -74,4 +74,8 @@ p str # => "あああ"
 p [1, 2, 3, 4, 5, 6].sort.reverse # => [6, 5, 4, 3, 2, 1]
 p ["aaaaa","b","tt"].sort_by {|l| l.size } # =>  ["b", "tt", "aaaaa"]
 
-
+# 小数点　切り捨て　切り上げ　四捨五入
+p 1.4.floor # => 1
+p 1.4.ceil # => 2
+p 1.5.round # => 2
+p 1.23456.round(3) # 1.235
