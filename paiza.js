@@ -270,3 +270,59 @@
   // 現在のスコープ(OUTERブロックスコープ)にある`x`を参照する
   console.log(x); // => "outer"
 }
+// コールバック関数の中でthisを使う場合、一度thisを別の変数に代入してから
+{
+  "use strict";
+  const Prefixer = {
+    prefix: "pre",
+    prefixArray(strings) {
+      // `that`は`prefixArray`メソッド呼び出しにおける`this`となる
+      // つまり`that`は`Prefixer`オブジェクトを参照する
+      const that = this;
+      return strings.map(function (str) {
+        // `this`ではなく`that`を参照する
+        return that.prefix + "-" + str;
+      });
+    }
+  };
+  // `prefixArray`メソッドにおける`this`は`Prefixer`
+  const prefixedStrings = Prefixer.prefixArray(["a", "b", "c"]);
+  console.log(prefixedStrings); // => ["pre-a", "pre-b", "pre-c"]
+}
+// 第2引数に渡すことも可能
+{
+  "use strict";
+  const Prefixer = {
+    prefix: "pre",
+    prefixArray(strings) {
+      // `Array#map`メソッドは第二引数に`this`となる値を渡せる
+      return strings.map(function (str) {
+        // `this`が第二引数の値と同じになる
+        // つまり`prefixArray`メソッドと同じ`this`となる
+        return this.prefix + "-" + str;
+      }, this);
+    }
+  };
+  // `prefixArray`メソッドにおける`this`は`Prefixer`
+  const prefixedStrings = Prefixer.prefixArray(["a", "b", "c"]);
+  console.log(prefixedStrings); // => ["pre-a", "pre-b", "pre-c"]
+}
+// アロー関数を使うことで暗黙的なthisを受け取らない
+{
+  "use strict";
+  const Prefixer = {
+    prefix: "pre",
+    prefixArray(strings) {
+      return strings.map((str) => {
+        // Arrow Function自体は`this`を持たない
+        // `this`は外側の`prefixArray`関数が持つ`this`を参照する
+        // そのため`this.prefix`は"pre"となる
+        return this.prefix + "-" + str;
+      });
+    }
+  };
+  // このとき、`prefixArray`のベースオブジェクトは`Prefixer`となる
+  // つまり、`prefixArray`メソッド内の`this`は`Prefixer`を参照する
+  const prefixedStrings = Prefixer.prefixArray(["a", "b", "c"]);
+  console.log(prefixedStrings); // => ["pre-a", "pre-b", "pre-c"]
+}
