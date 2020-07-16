@@ -326,3 +326,53 @@
   const prefixedStrings = Prefixer.prefixArray(["a", "b", "c"]);
   console.log(prefixedStrings); // => ["pre-a", "pre-b", "pre-c"]
 }
+// クラスでは、プロパティの参照（getter）、プロパティへの代入（setter）時に呼び出される特殊なメソッドを定義できる
+//プロパティのように振る舞うためアクセッサプロパティと呼ばれます。
+{
+  class NumberWrapper {
+    constructor(value) {
+      this._value = value;
+    }
+    // `_value`プロパティの値を返すgetter
+    get value() {
+      console.log("getter");
+      return this._value;
+    }
+    // `_value`プロパティに値を代入するsetter
+    set value(newValue) {
+      console.log("setter");
+      this._value = newValue;
+    }
+  }
+  const numberWrapper = new NumberWrapper(1);
+  // "getter"とコンソールに表示される
+  console.log(numberWrapper.value); // => 1
+  // "setter"とコンソールに表示される
+  numberWrapper.value = 42;
+  // "getter"とコンソールに表示される
+  console.log(numberWrapper.value); // => 42
+}
+// クラスをインスタンス化せずに利用できる静的メソッド（クラスメソッド）
+{
+  class ArrayWrapper {
+    constructor(array = []) {
+      this.array = array;
+    }
+
+    // rest parametersとして要素を受けつける
+    static of(...items) {
+      return new ArrayWrapper(items);
+    }
+
+    get length() {
+      return this.array.length;
+    }
+  }
+
+  // 配列を引数として渡している
+  const arrayWrapperA = new ArrayWrapper([1, 2, 3]);
+  // 要素を引数として渡している
+  const arrayWrapperB = ArrayWrapper.of(1, 2, 3);
+  console.log(arrayWrapperA.length); // => 3
+  console.log(arrayWrapperB.length); // => 3
+}
