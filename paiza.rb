@@ -86,4 +86,12 @@ p 10.to_f / 3 # => 3.333333...
 str = ["あ", "い", "う", "え", "お"]
 p str.any? { |s| "さとう".include?(s) } # => true
 
-
+# each_with_index
+languages = ["Ruby", "PHP", "Java"]
+languages.each_with_index do |lang, index|
+  p "#{index}: #{lang}"
+end
+# each.with_index（指定した番号から数えられる）
+languages.each.with_index(1) do |lang, index|
+  p "#{index}: #{lang}"
+end
