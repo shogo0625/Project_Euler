@@ -514,3 +514,35 @@
   });
   console.log("2. 同期的な処理が実行されました");
 }
+// Promiseチェーン
+{
+  // ランダムでFulfilledまたはRejectedの`Promise`インスタンスを返す関数
+  function asyncTask() {
+    return Math.random() > 0.5
+      ? Promise.resolve("成功")
+      : Promise.reject(new Error("失敗"));
+  }
+  // asyncTask関数は新しい`Promise`インスタンスを返す
+  asyncTask()
+    // thenメソッドは新しい`Promise`インスタンスを返す
+    .then(function onFulfilled(value) {
+      console.log(value); // => "成功"
+    })
+    // catchメソッドは新しい`Promise`インスタンスを返す
+    .catch(function onRejected(error) {
+      console.log(error.message); // => "失敗"
+    });
+}
+// Promiseチェーンの最後にFainally節（成功・失敗どちらでも実行）を入れる
+{
+  // `promise`にはResolvedまたはRejectedなPromiseインスタンスがランダムで入る
+  const promise = Math.random() < 0.5 ? Promise.resolve() : Promise.reject();
+  promise.then(() => {
+    console.log("Promise#then");
+  }).catch((error) => {
+    console.log("Promise#catch");
+  }).finally(() => {
+    // 成功、失敗どちらの場合でも呼び出される
+    console.log("Promise#finally");
+  });
+}
