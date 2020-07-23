@@ -546,3 +546,127 @@
     console.log("Promise#finally");
   });
 }
+// Promiseチェーンで逐次処理
+{
+  function dummyfetch(path) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (path.startsWith("/responce")) {
+          resolve({ body: `Response body of ${path}` });
+        } else {
+          reject(new Error("NOT FOUND"));
+        }
+      }, 1000 * Math.random());
+    });
+  }
+
+  const results = [];
+  // Resource Aを取得する
+  dummyFetch("/resource/A").then(response => {
+    results.push(response.body);
+    // Resource Bを取得する
+    return dummyFetch("/resource/B");
+  }).then(response => {
+    results.push(response.body);
+  }).then(() => {
+    console.log(results); // => ["Response body of /resource/A", "Response body of /resource/B"]
+  });
+}
+// Promise.all
+{
+  // `timeoutMs`ミリ秒後にresolveする
+  function delay(timeoutMs) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(timeoutMs);
+      }, timeoutMs);
+    });
+  }
+  const promise1 = delay(1);
+  const promise2 = delay(2);
+  const promise3 = delay(3);
+
+  Promise.all([promise1, promise2, promise3]).then(function (values) {
+    console.log(values); // => [1, 2, 3]
+  });
+}
+// 2つ上のコードをPromiseチェーンからPromise.allへ
+{
+  function dummyFetch(path) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (path.startsWith("/resource")) {
+          resolve({ body: `Response body of ${path}` });
+        } else {
+          reject(new Error("NOT FOUND"));
+        }
+      }, 1000 * Math.random());
+    });
+  }
+
+  const fetchedPromise = Promise.all([
+    dummyFetch("/resource/A"),
+    dummyFetch("/resource/B")
+  ]);
+  // fetchedPromiseの結果をDestructuringでresponseA, responseBに代入している
+  fetchedPromise.then(([responseA, responseB]) => {
+    console.log(responseA.body); // => "Response body of /resource/A"
+    console.log(responseB.body); // => "Response body of /resource/B"
+  }).catch(error => {
+    console.error(error); // Error: NOT FOUND
+  });
+}
+// Promise.race
+// Promiseインスタンスの配列を受け取り一番最初に処理が終了したPromiseインスタンスを返す
+{
+  // `timeoutMs`ミリ秒後にresolveする
+  function delay(timeoutMs) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(timeoutMs);
+      }, timeoutMs);
+    });
+  }
+  // 1つでもresolveまたはrejectした時点で次の処理を呼び出す
+  const racePromise = Promise.race([
+    delay(1),
+    delay(32),
+    delay(64),
+    delay(128)
+  ]);
+  racePromise.then(value => {
+    // もっとも早く完了するのは1ミリ秒後
+    console.log(value); // => 1
+  });
+}
+// timeout 関数と dummyFetch関数 どちらの処理が早いか競争（race）
+{
+  // `timeoutMs`ミリ秒後にrejectする
+  function timeout(timeoutMs) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(new Error(`Timeout: ${timeoutMs}ミリ秒経過`));
+      }, timeoutMs);
+    });
+  }
+  function dummyFetch(path) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (path.startsWith("/resource")) {
+          resolve({ body: `Response body of ${path}` });
+        } else {
+          reject(new Error("NOT FOUND"));
+        }
+      }, 1000 * Math.random());
+    });
+  }
+  // 500ミリ秒以内に取得できなければ失敗時の処理が呼ばれる
+  Promise.race([
+    dummyFetch("/resource/data"),
+    timeout(500),
+  ]).then(response => {
+    console.log(response.body); // => "Response body of /resource/data"
+  }).catch(error => {
+    console.log(error.message); // => "Timeout: 500ミリ秒経過"
+  });
+}
