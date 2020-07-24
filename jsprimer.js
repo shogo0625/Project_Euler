@@ -670,3 +670,69 @@
     console.log(error.message); // => "Timeout: 500ミリ秒経過"
   });
 }
+// Async Function　非同期処理を行う関数を定義する構文　必ずProimiseインスタンスを返す
+{
+  // 関数の前にasyncを付ける
+  async function doAsync() {
+    return "値";
+  }
+  // doAsync関数はPromiseを返す
+  doAsync().then(value => {
+    console.log(value); // => "値"
+  });
+}
+// 下のPromise.resolve(返り値)と同じ意味
+{
+  // 通常の関数でPromiseインスタンスを返している
+  function doAsync() {
+    return Promise.resolve("値");
+  }
+  doAsync().then(value => {
+    console.log(value); // => "値"
+  });
+}
+// Async Functionの種類
+{
+  // 関数宣言のAsync Function版
+  async function fn1() { }
+  // 関数式のAsync Function版
+  const fn2 = async function () { };
+  // Arrow FunctionのAsync Function版
+  const fn3 = async () => { };
+  // メソッドの短縮記法のAsync Function版
+  const obj = { async method() { } };
+}
+// Async Functionが返すPromiseインスタンスの3つの種類
+// 1. Async Functionが値をreturnした場合、その返り値を持つFulfilledなPromiseを返す
+// 2. Async FunctionがPromiseをreturnした場合、その返り値のPromiseをそのまま返す
+// 3. Async Function内で例外が発生した場合は、そのエラーを持つRejectedなPromiseを返す
+{
+  // 1. resolveFnは値を返している
+  // 何もreturnしていない場合はundefinedを返したのと同じ扱いとなる
+  async function resolveFn() {
+    return "返り値";
+  }
+  resolveFn().then(value => {
+    console.log(value); // => "返り値"
+  });
+
+  // 2. rejectFnはPromiseインスタンスを返している
+  async function rejectFn() {
+    return Promise.reject(new Error("エラーメッセージ"));
+  }
+  // rejectFnはRejectedなPromiseを返すのでcatchできる
+  rejectFn().catch(error => {
+    console.log(error.message); // => "エラーメッセージ"
+  });
+
+  // 3. exceptionFnは例外を投げている
+  async function exceptionFn() {
+    throw new Error("例外が発生しました");
+    // 例外が発生したため、この行は実行されません
+  }
+  // Async Functionで例外が発生するとRejectedなPromiseが返される
+  exceptionFn().catch(error => {
+    console.log(error.message); // => "例外が発生しました"
+  });
+}
+// await式 右辺のPromiseインスタンスがFulfilledまたはRejectedになるまでその場で非同期処理の完了を待つ
