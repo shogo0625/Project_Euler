@@ -736,3 +736,134 @@
   });
 }
 // await式 右辺のPromiseインスタンスがFulfilledまたはRejectedになるまでその場で非同期処理の完了を待つ
+{
+  function dummyFetch(path) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (path.startsWith("/resource")) {
+          resolve({ body: `Response body of ${path}` });
+        } else {
+          reject(new Error("NOT FOUND"));
+        }
+      }, 1000 * Math.random());
+    });
+  }
+  // リソースAとリソースBを順番に取得する
+  async function fetchAB() {
+    const results = [];
+    const responseA = await dummyFetch("/resource/A");
+    results.push(responseA.body);
+    const responseB = await dummyFetch("/resource/B");
+    results.push(responseB.body);
+    return results;
+  }
+  // リソースを取得して出力する
+  fetchAB().then((results) => {
+    console.log(results); // => ["Response body of /resource/A", "Response body of /resource/B"]
+  });
+}
+// 複数の非同期処理を行う際に、Async Functionはforループなどの反復処理と組み合わせる
+{
+  function dummyFetch(path) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (path.startsWith("/resource")) {
+          resolve({ body: `Response body of ${path}` });
+        } else {
+          reject(new Error("NOT FOUND"));
+        }
+      }, 1000 * Math.random());
+    });
+  }
+  // 複数のリソースを順番に取得する
+  async function fetchResources(resources) {
+    const results = [];
+    for (let i = 0; i < resources.length; i++) {
+      const resource = resources[i];
+      // ループ内で非同期処理の完了を待っている
+      const response = await dummyFetch(resource);
+      results.push(response.body);
+    }
+    // 反復処理がすべて終わったら結果を返す(返り値となるPromiseを`results`でresolveする)
+    return results;
+  }
+  // 取得したいリソースのパス配列
+  const resources = [
+    "/resource/A",
+    "/resource/B"
+  ];
+  // リソースを取得して出力する
+  fetchResources(resources).then((results) => {
+    console.log(results); // => ["Response body of /resource/A", "Response body of /resource/B"]
+  });
+}
+// 上のfor文だと全て取得するのに時間が掛かる
+// await式とPromise．allメソッドを組み合わせる
+{
+  function dummyFetch(path) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (path.startsWith("/resource")) {
+          resolve({ body: `Response body of ${path}` });
+        } else {
+          reject(new Error("NOT FOUND"));
+        }
+      }, 1000 * Math.random());
+    });
+  }
+  // 複数のリソースをまとめて取得する
+  async function fetchAllResources(resources) {
+    // リソースを同時に取得する
+    const promises = resources.map(function (resource) {
+      return dummyFetch(resource);
+    });
+    // すべてのリソースが取得できるまで待つ
+    // Promise.allは [ResponseA, ResponseB] のように結果が配列となる
+    const responses = await Promise.all(promises);
+    // 取得した結果からレスポンスのボディだけを取り出す
+    return responses.map((response) => {
+      return response.body;
+    });
+  }
+  const resources = [
+    "/resource/A",
+    "/resource/B"
+  ];
+  // リソースを取得して出力する
+  fetchAllResources(resources).then((results) => {
+    console.log(results); // => ["Response body of /resource/A", "Response body of /resource/B"]
+  });
+}
+
+// Map キーと値の組み合わせからなる抽象データ型。 他の言語では辞書やハッシュマップ、連想配列などと呼ばれる
+// 初期値としてエントリーの配列を渡せる　=> [キー, 値]という形式の配列
+{
+  const map = new Map([["key1", "value1"], ["key2", "value2"]]);
+  // 2つのエントリーで初期化されている
+  console.log(map.size); // => 2
+}
+// 新しい要素をsetメソッドで追加、追加した要素をgetメソッドで取得
+{
+  const map = new Map();
+  // 新しい要素の追加
+  map.set("key", "value1");
+  console.log(map.size); // => 1
+  console.log(map.get("key")); // => "value1"
+  // 要素の上書き
+  map.set("key", "value2");
+  console.log(map.get("key")); // => "value2"
+  // キーの存在確認
+  console.log(map.has("key")); // => true
+  console.log(map.has("foo")); // => false
+}
+// deleteメソッドにキーを渡して値を削除 clearで全て削除
+{
+  const map = new Map();
+  map.set("key1", "value1");
+  map.set("key2", "value2");
+  console.log(map.size); // => 2
+  map.delete("key1");
+  console.log(map.size); // => 1
+  map.clear();
+  console.log(map.size); // => 0
+}
