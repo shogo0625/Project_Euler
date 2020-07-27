@@ -867,3 +867,137 @@
   map.clear();
   console.log(map.size); // => 0
 }
+// マップの反復処理
+// forEach メソッド　配列と異なり、インデックスの代わりにキーが渡される
+{
+  const map = new Map([["key1", "value1"], ["key2", "value2"]]);
+  const results = [];
+  map.forEach((value, key) => {
+    results.push(`${key}:${value}`);
+  });
+  console.log(results); // => ["key1:value1","key2:value2"]
+}
+// keys メソッド　戻り地は配列ではなくIteratorオブジェクト for..ofやArray.fromで配列に変換
+{
+  const map = new Map([["key1", "value1"], ["key2", "value2"]]);
+  const keys = [];
+  // keysメソッドの戻り値(Iterator)を反復処理する
+  for (const key of map.keys()) {
+    keys.push(key);
+  }
+  console.log(keys); // => ["key1","key2"]
+  // keysメソッドの戻り値(Iterator)から配列を作成する
+  const keysArray = Array.from(map.keys());
+  console.log(keysArray); // => ["key1","key2"]
+}
+// entriesメソッド　マップが持つすべての要素をエントリーとして挿入順に並べたIteratorオブジェクトを返す
+{
+  const map = new Map([["key1", "value1"], ["key2", "value2"]]);
+  const entries = [];
+  for (const [key, value] of map.entries()) {
+    entries.push(`${key}:${value}`);
+  }
+  console.log(entries); // => ["key1:value1","key2:value2"]
+}
+// マップそのものからも取得可能
+{
+  const map = new Map([["key1", "value1"], ["key2", "value2"]]);
+  const results = [];
+  for (const [key, value] of map) {
+    results.push(`${key}:${value}`);
+  }
+  console.log(results); // => ["key1:value1","key2:value2"]
+}
+// 商品のオブジェクトと注文数をマッピング
+{
+  // ショッピングカートを表現するクラス
+  class ShoppingCart {
+    constructor() {
+      // 商品とその数を持つマップ
+      this.items = new Map();
+    }
+    // カートに商品を追加する
+    addItem(item) {
+      const count = this.items.get(item) || 0;
+      this.items.set(item, count + 1);
+    }
+    // カート内の合計金額を返す
+    getTotalPrice() {
+      return Array.from(this.items).reduce((total, [item, count]) => {
+        return total + item.price * count;
+      }, 0);
+    }
+    // カートの中身を文字列にして返す
+    toString() {
+      return Array.from(this.items).map(([item, count]) => {
+        return `${item.name}:${count}`;
+      }).join(",");
+    }
+  }
+  const shoppingCart = new ShoppingCart();
+  // 商品一覧
+  const shopItems = [
+    { name: "みかん", price: 100 },
+    { name: "リンゴ", price: 200 },
+  ];
+
+  // カートに商品を追加する
+  shoppingCart.addItem(shopItems[0]);
+  shoppingCart.addItem(shopItems[0]);
+  shoppingCart.addItem(shopItems[1]);
+
+  // 合計金額を表示する
+  console.log(shoppingCart.getTotalPrice()); // => 400
+  // カートの中身を表示する
+  console.log(shoppingCart.toString()); // => "みかん:2,リンゴ:1"
+}
+
+// Set オブジェクト　重複する値を持たない配列のようなもの
+{
+  // "value2"が重複するため、片方は無視される
+  const set = new Set(["value1", "value2", "value2"]);
+  // セットのサイズは2になる
+  console.log(set.size); // => 2
+}
+// add セットに値を追加
+{
+  const set = new Set();
+  // 値の追加
+  set.add("a");
+  console.log(set.size); // => 1
+  // 重複する値は追加されない
+  set.add("a");
+  console.log(set.size); // => 1
+  // 値の存在確認
+  console.log(set.has("a")); // => true
+  console.log(set.has("b")); // => false
+}
+// delete 値の削除　clear 値の全てを削除
+{
+  const set = new Set();
+  set.add("a");
+  set.add("b");
+  console.log(set.size); // => 2
+  set.delete("a");
+  console.log(set.size); // => 1
+  set.clear();
+  console.log(set.size); // => 0
+}
+// forEach使える　セットの反復処理
+{
+  const set = new Set(["a", "b"]);
+  const results = [];
+  set.forEach((value) => {
+    results.push(value);
+  });
+  console.log(results); // => ["a","b"]
+}
+// for...of文でSetオブジェクトを反復処理
+{
+  const set = new Set(["a", "b"]);
+  const results = [];
+  for (const value of set) {
+    results.push(value);
+  }
+  console.log(results); // => ["a","b"]
+}
