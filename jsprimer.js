@@ -1001,3 +1001,77 @@
   }
   console.log(results); // => ["a","b"]
 }
+
+// JSONオブジェクト
+// JSON形式の文字列とJavaScriptのオブジェクトを相互に変換するメソッド
+// JSON.parseメソッド 引数に与えられた文字列をJSONとしてパースし、オブジェクトとして返す
+{
+  // JSONはダブルクォートのみを許容するため、シングルクォートでJSON文字列を記述
+  const json = '{ "id": 1, "name": "js-primer" }';
+  const obj = JSON.parse(json);
+  console.log(obj.id); // => 1
+  console.log(obj.name); // => "js-primer"
+}
+// 文字列がJSONの配列を表す場合は、JSON.parseメソッドの返り値も配列になる
+{
+  const json = "[1, 2, 3]";
+  console.log(JSON.parse(json)); // => [1, 2, 3]
+}
+// JSON形式でない文字列が与えられた場合、例外を返すため try...catch構文で例外処理
+{
+  const userInput = "not json value";
+  try {
+    const json = JSON.parse(userInput);
+  } catch (error) {
+    console.log("パースできませんでした");
+  }
+}
+// JSON.stringifyメソッド オブジェクトをJSON文字列に変換する
+{
+  const obj = { id: 1, name: "js-primer", bio: null };
+  console.log(JSON.stringify(obj)); // => '{"id":1,"name":"js-primer","bio":null}'
+}
+// 第二引数はreplacer引数とも呼ばれ、関数あるいは配列を渡せる
+// 関数を渡した場合,プロパティのキーと値が渡され、返り値によって変換される際の挙動をコントロール
+{
+  const obj = { id: 1, name: "js-primer", bio: null };
+  const replacer = (key, value) => {
+    if (value === null) {
+      return undefined;
+    }
+    return value;
+  };
+  console.log(JSON.stringify(obj, replacer)); // => '{"id":1,"name":"js-primer"}'
+}
+// 配列を渡した場合はプロパティのホワイトリストとして使われ、 その配列に含まれる名前のプロパティだけが変換
+{
+  const obj = { id: 1, name: "js-primer", bio: null };
+  const replacer = ["id", "name"];
+  console.log(JSON.stringify(obj, replacer)); // => '{"id":1,"name":"js-primer"}'
+}
+// 第三引数はspace引数とも呼ばれ、変換後のJSON形式の文字列を読みやすくフォーマットする際のインデントを設定できる
+{
+  const obj = { id: 1, name: "js-primer" };
+  // replacer引数を使わない場合はnullを渡して省略するのが一般的です
+  console.log(JSON.stringify(obj, null, 2)); // "\t"でタブ文字も渡せる
+  /*
+  {
+     "id": 1,
+     "name": "js-primer"
+  }
+  */
+}
+// toJSONメソッド　引数に直接渡されたときだけでなく引数のプロパティとして登場したときにも再帰的に処理される
+// オブジェクトがtoJSONメソッドを持っている場合、JSON.stringifyメソッドは既定の文字列変換ではなくtoJSONメソッドの返り値を使う
+{
+  const obj = {
+    foo: "foo",
+    toJSON() {
+      return "bar";
+    }
+  };
+  console.log(JSON.stringify(obj)); // => '"bar"'
+  console.log(JSON.stringify({ x: obj })); // => '{"x":"bar"}'
+}
+// toJSONメソッドは自作のクラスを特殊な形式でシリアライズする目的などに使われる
+
