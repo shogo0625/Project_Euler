@@ -1075,3 +1075,61 @@
 }
 // toJSONメソッドは自作のクラスを特殊な形式でシリアライズする目的などに使われる
 
+// Dateのインスタンスメソッド
+// 標準のDateよりライブラリを使う方が一般的。 代表的なライブラリ: moment.js, js-joda、date-fns
+{
+  // YYYY/MM/DD形式の文字列に変換する関数
+  function formatDate(date) {
+    const yyyy = String(date.getFullYear());
+    // String#padStartメソッド（ES2017）で2桁になるように0埋めする
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    return `${yyyy}/${mm}/${dd}`;
+  }
+
+  const date = new Date("2006-01-02T15:04:05.999");
+  console.log(formatDate(date)); // => "2006/01/02"
+}
+// getTimezoneOffsetメソッドは、実行環境のタイムゾーンのUTCからのオフセット値を分単位の数値で返す
+{
+  // getTimezoneOffsetはインスタンスメソッドなので、インスタンスが必要
+  const now = new Date();
+  // 時間単位にしたタイムゾーンオフセット
+  const timezoneOffsetInHours = now.getTimezoneOffset() / 60;
+  // UTCの現在の時間を計算できる
+  console.log(`Hours in UTC: ${now.getHours() + timezoneOffsetInHours}`);
+}
+
+// Mathオブジェクト
+{
+  // minからmaxまでの乱数を返す関数
+  function getRandom(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  // 1以上5未満の浮動小数点数を返す
+  console.log(getRandom(1, 5));
+
+  console.log(Math.max(1, 10)); // => 10
+  console.log(Math.min(1, 10)); // => 1
+
+  // 数値の配列の中から最大・最小の値を取り出す際には、...（spread構文）を使うと簡潔
+  const numbers = [1, 2, 3, 4, 5];
+  console.log(Math.max(...numbers)); // => 5
+  console.log(Math.min(...numbers)); // => 1
+}
+// 数値を整数に丸めるメソッド
+{
+  // 底関数　Math.floorメソッドは、引数として渡した数以下で最大の整数を返す
+  console.log(Math.floor(1.3)); // => 1
+  console.log(Math.floor(-1.3)); // => -2
+  // 天井関数　Math.ceilメソッドは、引数として渡した数以上で最小の整数を返す
+  console.log(Math.ceil(1.3)); // => 2
+  console.log(Math.ceil(-1.3)); // => -1
+  // 四捨五入　Math.roundメソッドは、一般的な四捨五入の処理を行う
+  console.log(Math.round(1.3)); // => 1
+  console.log(Math.round(1.6)); // => 2
+  console.log(Math.round(-1.3)); // => -1
+  // Math.truncメソッドは、渡された数字の小数点以下を単純に切り落とした整数を返す
+  console.log(Math.trunc(1.3)); // => 1
+  console.log(Math.trunc(-1.3)); // => -1
+}
