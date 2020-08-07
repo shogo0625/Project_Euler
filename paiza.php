@@ -363,3 +363,12 @@ array_multisort(
   $data
 );
 print_r($data);
+
+// 日時を扱う関数
+echo time() . PHP_EOL; // 現在日時をUTC標準時からの秒数で取得
+echo date('Y-m-d l', time()) . PHP_EOL; // 現在日時を指定のフォーマットで
+echo date('Y-m-d l') . PHP_EOL; // 上のtime()は省略可能
+echo date('Y-m-d l', mktime(0, 0, 0, 5, 1, 2020)) . PHP_EOL; // 指定の日時からNIXタイムスタンプを作成
+echo date('Y-m-d l', strtotime('2020-05-07')) . PHP_EOL; // 時間っぽい文字列からUNIXタイムスタンプを作成
+echo date('Y-m-d l', strtotime('2020-05-07 +1 day')) . PHP_EOL; // +1 day なども可能
+// Datetimeクラスを使うほうが一般的
